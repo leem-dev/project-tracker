@@ -1,0 +1,45 @@
+.projectInput {
+  margin-left: 10px;
+  background-color: rgb(84, 83, 83);
+  color: white;
+  outline: none;
+
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.projectLabel {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.divButton {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.tableFolder {
+  margin-top: 20px;
+  width: 300px;
+  overflow: auto;
+  border: 1px dashed blue;
+}
+
+.tableContent {
+  height: 100px;
+}
+
+.rowContent {
+  background-color: rgb(84, 83, 83);
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.rowContent th {
+  font-size: 11px;
+}
