@@ -1,53 +1,13 @@
 import { useState, useEffect } from "react";
-import { Box, VStack, Heading } from "@chakra-ui/react";
+import { Box, VStack, Heading, HStack } from "@chakra-ui/react";
 import "./project.styles.css";
 
 const ProjectSection = () => {
-  const [newName, setNewName] = useState("");
-  const [date, setDate] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [newPriority, setNewPriority] = useState("");
-  const [newNiche, setNewNiche] = useState("");
-  const [newPoint, setNewPoint] = useState("");
-  const [count, setCount] = useState(0);
-  const [data, setData] = useState([]);
-
-  const getNewName = (e) => {
-    setNewName(e.target.value);
-  };
-
-  const onDateChange = (event) => {
-    setDate(event.target.value);
-  };
-
-  const onDueDateChange = (event) => {
-    setDueDate(event.target.value);
-  };
-
-  const getPriority = (event) => {
-    setNewPriority(event.target.value);
-  };
-
-  const getNiche = (event) => {
-    setNewNiche(event.target.value);
-  };
-
-  const getPoint = (event) => {
-    setNewPoint(event.target.value);
-  };
-
-  // const clickHandler = (event) => {
-  //   event.preventDefault();
-  //   setCount(count + 1);
-  // };
-
-  const resetProject = () => {
-    setNewName("");
-    setDate("");
-    setDueDate("");
-    setNewPriority("");
-    setNewNiche("");
-    setNewPoint("");
+  const contStyle = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   };
 
   const dateStyle = {
@@ -60,6 +20,7 @@ const ProjectSection = () => {
     outline: "none",
     padding: "6px",
   };
+
   const btnProject = {
     backgroundColor: "black",
     borderRadius: "5px",
@@ -70,66 +31,96 @@ const ProjectSection = () => {
     padding: "4px 10px",
   };
 
-  const handleProjectSubmission = (event) => {
-    event.preventDefault();
-    setCount(count + 1);
-    console.log(count);
+  const [dataFromForm, setDataFromForm] = useState({
+    projectName: "",
+    date: "",
+    dueDate: "",
+    priority: "",
+    niche: "",
+    point: "",
+  });
 
-    console.log("I am here!!");
-    setData(
-      data.push({
-        id: count,
-        name: newName,
-        olddate: date,
-        duedate: dueDate,
-        priority: newPriority,
-        niche: newNiche,
-        point: newPoint,
-      })
-    );
+  const [projectData, setProjectData] = useState([]);
+  const [editSection, setEditSection] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-    console.log(data);
-    resetProject();
+  const getNewName = (e) => {
+    setDataFromForm({ ...dataFromForm, projectName: e.target.value });
+  };
+
+  const onDateChange = (e) => {
+    setDataFromForm({ ...dataFromForm, date: e.target.value });
+  };
+
+  const onDueDateChange = (e) => {
+    setDataFromForm({ ...dataFromForm, dueDate: e.target.value });
+  };
+
+  const getPriority = (e) => {
+    setDataFromForm({ ...dataFromForm, priority: e.target.value });
+  };
+
+  const getNiche = (e) => {
+    setDataFromForm({ ...dataFromForm, niche: e.target.value });
+  };
+
+  const getPoint = (e) => {
+    setDataFromForm({ ...dataFromForm, point: e.target.value });
   };
 
   useEffect(() => {
-    const receivedUserData = JSON.stringify(data);
-    localStorage.setItem("data", receivedUserData);
-  }, [data]);
-
-  useEffect(() => {
-    const receivedUserData = localStorage.getItem("data");
-    const savedUserData = JSON.parse(receivedUserData);
-
-    if (savedUserData) {
-      setData(savedUserData);
-    }
+    const saveDataToStorage =
+      JSON.parse(localStorage.getItem("projectData")) || [];
+    setProjectData(saveDataToStorage);
   }, []);
-  // const [newMessage, setNewMessage] = useState();
 
-  // const projectRows = newMessage.map((val) => {
-  //   return (
-  //     <tr>
-  //       <td>{val.id}</td>
-  //       <td>{val.newName}</td>
-  //       <td>{val.date}</td>
-  //       <td>{val.dueDate}</td>
-  //       <td>{val.newPriority}</td>
-  //       <td>{val.newNiche}</td>
-  //       <td>{val.newPoint}</td>
-  //       <td>
-  //         <button>Edit</button>
-  //         <button>Delete</button>
-  //       </td>
-  //     </tr>
-  //   );
-  // });
+  const addRows = (data) => {
+    const totalProjectAdded = projectData.length;
+    data.id = totalProjectAdded + 1;
+    const projectAdded = [...projectData];
+    projectAdded.push(data);
+    setProjectData(projectAdded);
+  };
 
-  const contStyle = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+  const handleProjectSubmission = (e) => {
+    e.preventDefault();
+
+    if (editSection !== null) {
+      const newProjectData = [...projectData];
+      newProjectData[editSection] = dataFromForm;
+      setProjectData(newProjectData);
+      setEditSection(null);
+    } else {
+      setDataFromForm([...projectData, dataFromForm]);
+    }
+
+    localStorage.setItem(
+      "projectData",
+      JSON.stringify([...projectData, dataFromForm])
+    );
+
+    setDataFromForm({
+      projectName: "",
+      date: "",
+      dueDate: "",
+      priority: "",
+      niche: "",
+      point: "",
+    });
+  };
+
+  // const tableRows = ;
+
+  const editHandler = (index) => {
+    setDataFromForm(projectData[index]);
+    setEditSection(index);
+    setShowModal(true);
+  };
+
+  const deleteHandler = (index) => {
+    const updateData = projectData.filter((_, i) => i !== index);
+    setProjectData(updateData);
+    localStorage.setItem("projectData", JSON.stringify(updateData));
   };
 
   return (
@@ -155,7 +146,7 @@ const ProjectSection = () => {
                   placeholder="project"
                   className="projectInput"
                   onChange={getNewName}
-                  value={newName}
+                  value={dataFromForm.projectName}
                 />
               </label>
 
@@ -164,7 +155,7 @@ const ProjectSection = () => {
                 <input
                   type="date"
                   style={dateStyle}
-                  value={date}
+                  value={dataFromForm.date}
                   onChange={onDateChange}
                   className="dateInput"
                 />
@@ -174,7 +165,7 @@ const ProjectSection = () => {
                 <input
                   type="date"
                   style={dateStyle}
-                  value={dueDate}
+                  value={dataFromForm.dueDate}
                   onChange={onDueDateChange}
                   className="dateInput"
                 />
@@ -185,7 +176,7 @@ const ProjectSection = () => {
                   type="text"
                   placeholder="priority"
                   className="projectInput"
-                  value={newPriority}
+                  value={dataFromForm.priority}
                   onChange={getPriority}
                 />
               </label>
@@ -195,7 +186,7 @@ const ProjectSection = () => {
                   type="text"
                   placeholder="niche"
                   className="projectInput"
-                  value={newNiche}
+                  value={dataFromForm.niche}
                   onChange={getNiche}
                 />
               </label>
@@ -205,13 +196,13 @@ const ProjectSection = () => {
                   type="text"
                   placeholder="point"
                   className="projectInput"
-                  value={newPoint}
+                  value={dataFromForm.point}
                   onChange={getPoint}
                 />
               </label>
               <div className="divButton">
                 <button type="submit" style={btnProject}>
-                  Add Project
+                  {editSection !== null ? "Update" : "Submit"}
                 </button>
               </div>
             </VStack>
@@ -230,8 +221,109 @@ const ProjectSection = () => {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody></tbody>
+              <tbody>
+                {projectData.map((val, index) => (
+                  <tr key={index}>
+                    <td>{val.id}</td>
+                    <td>{val.projectName}</td>
+                    <td>{val.date}</td>
+                    <td>{val.dueDate}</td>
+                    <td>{val.priority}</td>
+                    <td>{val.niche}</td>
+                    <td>{val.point}</td>
+                    <td>
+                      <button onClick={() => editHandler(index)}>Edit</button>
+                      <button onClick={() => deleteHandler(index)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {addRows}
+              </tbody>
             </table>
+
+            {showModal && (
+              <div className="show--modal">
+                <form onSubmit={handleProjectSubmission}>
+                  <VStack alignItems="start" spacing={4}>
+                    <label className="projectLabel1">
+                      Project Name:
+                      <input
+                        type="text"
+                        placeholder="project"
+                        className="projectInput"
+                        onChange={getNewName}
+                        value={dataFromForm.projectName}
+                      />
+                    </label>
+
+                    <label>
+                      Date Added:
+                      <input
+                        type="date"
+                        value={dataFromForm.date}
+                        onChange={onDateChange}
+                        className="dateInput"
+                        style={dateStyle}
+                      />
+                    </label>
+                    <label>
+                      Due Date:
+                      <input
+                        type="date"
+                        value={dataFromForm.dueDate}
+                        onChange={onDueDateChange}
+                        className="dateInput"
+                        style={dateStyle}
+                      />
+                    </label>
+                    <label>
+                      Priority:
+                      <input
+                        type="text"
+                        placeholder="priority"
+                        className="projectInput"
+                        value={dataFromForm.priority}
+                        onChange={getPriority}
+                      />
+                    </label>
+                    <label>
+                      Niche:
+                      <input
+                        type="text"
+                        placeholder="niche"
+                        value={dataFromForm.niche}
+                        onChange={getNiche}
+                        className="projectInput"
+                      />
+                    </label>
+                    <label>
+                      Story Point:
+                      <input
+                        type="text"
+                        placeholder="point"
+                        value={dataFromForm.point}
+                        onChange={getPoint}
+                        className="projectInput"
+                      />
+                    </label>
+                    <div className="divButton">
+                      <HStack>
+                        <button style={btnProject}>Update</button>
+                        <button
+                          type="button"
+                          style={btnProject}
+                          onClick={() => setShowModal(false)}
+                        >
+                          Close
+                        </button>
+                      </HStack>
+                    </div>
+                  </VStack>
+                </form>
+              </div>
+            )}
           </div>
         </Box>
       </VStack>
