@@ -1,0 +1,80 @@
+.project  {
+  background-color: rgb(84, 83, 83);
+  height: 100vh;
+}
+
+
+.projectInput {
+  margin-left: 10px;
+  background-color: rgb(84, 83, 83);
+  color: white;
+  outline: none;
+
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+
+.projectLabel {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.projectLabel1 {
+  width: 100px;
+}
+
+.divButton {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #4caf50;
+  color: white;
+}
+
+td {
+  font-size: 11px;
+}
+
+.tableFolder {
+  background-color: gray;
+  max-width: 300px;
+  overflow: auto;
+  max-height: 270px;
+}
+
+.tableContent {
+  height: 100px;
+}
+
+.show--modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  z-index: 1;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rowContent th {
+  font-size: 12px;
+}
